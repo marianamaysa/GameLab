@@ -2,12 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class DragDrop : MonoBehaviour
 {
     private Vector3 offset;
     [SerializeField] private string destinationTag;
     private bool dragging = false;
+    private Rigidbody rb;
 
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+    }
     void Update()
     {
         if (Input.touchCount > 0)
@@ -19,12 +26,9 @@ public class DragDrop : MonoBehaviour
                 case TouchPhase.Began:
                     //raycast para verificar se o toque começou sobre esse objeto
                     Ray ray = Camera.main.ScreenPointToRay(touch.position);
-                    RaycastHit hit;
-                    if (Physics.Raycast(ray, out hit) && hit.transform == transform)
+                    if (Physics.Raycast(ray, out RaycastHit hit) && hit.transform == transform)
                     {
                         offset = transform.position - GetTouchWorldPosition(touch);
-                        //desabilita o collider para não interferir no raycast durante o arraste
-                        GetComponent<Collider>().enabled = false;
                         dragging = true;
                     }
                     break;
@@ -32,25 +36,28 @@ public class DragDrop : MonoBehaviour
                 case TouchPhase.Moved:
                     if (dragging)
                     {
-                        transform.position = GetTouchWorldPosition(touch) + offset;
+                        Vector3 targetPos = GetTouchWorldPosition(touch) + offset;
+                        rb.MovePosition(targetPos);
                     }
                     break;
 
                 case TouchPhase.Ended:
                     if (dragging)
                     {
-                        //reabilita o collider
-                        GetComponent<Collider>().enabled = true;
-
-                        //realiza um raycast para detectar se o objeto foi solto sobre a área de destino
+                        //utiliza RaycastAll para encontrar o objeto de drop
                         Vector3 rayOrigin = Camera.main.transform.position;
                         Vector3 rayDirection = GetTouchWorldPosition(touch) - Camera.main.transform.position;
-                        RaycastHit hitInfo;
-                        if (Physics.Raycast(rayOrigin, rayDirection, out hitInfo))
+                        RaycastHit[] hits = Physics.RaycastAll(rayOrigin, rayDirection);
+
+                        foreach (RaycastHit dropHit in hits)
                         {
-                            if (hitInfo.transform.CompareTag(destinationTag))
+                            if (dropHit.transform == transform)
+                                continue;
+
+                            if (dropHit.transform.CompareTag(destinationTag))
                             {
-                                transform.position = hitInfo.transform.position;
+                                rb.MovePosition(dropHit.transform.position);
+                                break;
                             }
                         }
                         dragging = false;
@@ -62,7 +69,7 @@ public class DragDrop : MonoBehaviour
 
     Vector3 GetTouchWorldPosition(Touch touch)
     {
-        //converte a posição do toque para coordenadas do mundo, mantendo a mesma distância em z que o objeto.
+        //converte a posição do toque para coordenadas do mundo, mantendo a mesma distância em z que o objeto
         Vector3 touchScreenPos = new Vector3(touch.position.x, touch.position.y, Camera.main.WorldToScreenPoint(transform.position).z);
         return Camera.main.ScreenToWorldPoint(touchScreenPos);
     }

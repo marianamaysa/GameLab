@@ -169,7 +169,7 @@ GameObject:
   - component: {fileID: 261060800}
   - component: {fileID: 261060799}
   - component: {fileID: 261060798}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Mesa01 (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -308,7 +308,7 @@ GameObject:
   - component: {fileID: 596581914}
   - component: {fileID: 596581913}
   - component: {fileID: 596581912}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Computer
   m_TagString: DropDev
   m_Icon: {fileID: 0}
@@ -413,7 +413,7 @@ GameObject:
   - component: {fileID: 642162257}
   - component: {fileID: 642162256}
   - component: {fileID: 642162255}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Mesa01 (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -646,7 +646,7 @@ GameObject:
   - component: {fileID: 735275352}
   - component: {fileID: 735275351}
   - component: {fileID: 735275350}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -751,7 +751,7 @@ GameObject:
   - component: {fileID: 753384103}
   - component: {fileID: 753384102}
   - component: {fileID: 753384101}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Computer (2)
   m_TagString: DropDesign
   m_Icon: {fileID: 0}
@@ -891,7 +891,8 @@ GameObject:
   - component: {fileID: 832758058}
   - component: {fileID: 832758057}
   - component: {fileID: 832758056}
-  - component: {fileID: 832758055}
+  - component: {fileID: 832758062}
+  - component: {fileID: 832758061}
   m_Layer: 0
   m_Name: PinArt
   m_TagString: Untagged
@@ -899,19 +900,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &832758055
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 832758054}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64a282d6d72f5724c86f670d2b37053a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  destinationTag: DropArt
 --- !u!136 &832758056
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -994,12 +982,52 @@ Transform:
   m_GameObject: {fileID: 832758054}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -12.19, y: 1.12, z: 11.92}
+  m_LocalPosition: {x: -4.82, y: 1.12, z: 11.92}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1048750268}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &832758061
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 832758054}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 1
+  m_Constraints: 116
+  m_CollisionDetection: 1
+--- !u!114 &832758062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 832758054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a282d6d72f5724c86f670d2b37053a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  destinationTag: DropArt
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1138,7 +1166,7 @@ GameObject:
   - component: {fileID: 1053790159}
   - component: {fileID: 1053790158}
   - component: {fileID: 1053790157}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1243,7 +1271,7 @@ GameObject:
   - component: {fileID: 1273670776}
   - component: {fileID: 1273670775}
   - component: {fileID: 1273670774}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1348,7 +1376,7 @@ GameObject:
   - component: {fileID: 1430788146}
   - component: {fileID: 1430788145}
   - component: {fileID: 1430788144}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Mesa01 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1453,7 +1481,7 @@ GameObject:
   - component: {fileID: 1490489815}
   - component: {fileID: 1490489814}
   - component: {fileID: 1490489813}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Mesa01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1558,7 +1586,7 @@ GameObject:
   - component: {fileID: 1511943285}
   - component: {fileID: 1511943284}
   - component: {fileID: 1511943283}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Chao
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1664,7 +1692,8 @@ GameObject:
   - component: {fileID: 1727154704}
   - component: {fileID: 1727154703}
   - component: {fileID: 1727154702}
-  - component: {fileID: 1727154706}
+  - component: {fileID: 1727154708}
+  - component: {fileID: 1727154707}
   m_Layer: 0
   m_Name: PinDev
   m_TagString: Untagged
@@ -1760,7 +1789,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1048750268}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1727154706
+--- !u!54 &1727154707
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1727154701}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 1
+  m_Constraints: 116
+  m_CollisionDetection: 1
+--- !u!114 &1727154708
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1785,7 +1841,7 @@ GameObject:
   - component: {fileID: 2029293828}
   - component: {fileID: 2029293827}
   - component: {fileID: 2029293826}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Computer (1)
   m_TagString: DropArt
   m_Icon: {fileID: 0}
@@ -1890,7 +1946,8 @@ GameObject:
   - component: {fileID: 2068383990}
   - component: {fileID: 2068383989}
   - component: {fileID: 2068383988}
-  - component: {fileID: 2068383987}
+  - component: {fileID: 2068383994}
+  - component: {fileID: 2068383993}
   m_Layer: 0
   m_Name: PinDesign
   m_TagString: Untagged
@@ -1898,19 +1955,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2068383987
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2068383986}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64a282d6d72f5724c86f670d2b37053a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  destinationTag: DropDesign
 --- !u!136 &2068383988
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1993,12 +2037,52 @@ Transform:
   m_GameObject: {fileID: 2068383986}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -10.31, y: 1.13, z: 11.82}
+  m_LocalPosition: {x: 3.71, y: 1.13, z: 11.82}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1048750268}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &2068383993
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2068383986}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 1
+  m_Constraints: 116
+  m_CollisionDetection: 1
+--- !u!114 &2068383994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2068383986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64a282d6d72f5724c86f670d2b37053a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  destinationTag: DropDesign
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
