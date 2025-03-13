@@ -171,7 +171,7 @@ GameObject:
   - component: {fileID: 261060798}
   m_Layer: 6
   m_Name: Mesa01 (3)
-  m_TagString: Untagged
+  m_TagString: Cenario
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -308,7 +308,7 @@ GameObject:
   - component: {fileID: 596581914}
   - component: {fileID: 596581913}
   - component: {fileID: 596581912}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Computer
   m_TagString: DropDev
   m_Icon: {fileID: 0}
@@ -415,7 +415,7 @@ GameObject:
   - component: {fileID: 642162255}
   m_Layer: 6
   m_Name: Mesa01 (2)
-  m_TagString: Untagged
+  m_TagString: Cenario
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -648,7 +648,7 @@ GameObject:
   - component: {fileID: 735275350}
   m_Layer: 6
   m_Name: Cube (1)
-  m_TagString: Untagged
+  m_TagString: Cenario
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -751,7 +751,7 @@ GameObject:
   - component: {fileID: 753384103}
   - component: {fileID: 753384102}
   - component: {fileID: 753384101}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Computer (2)
   m_TagString: DropDesign
   m_Icon: {fileID: 0}
@@ -982,7 +982,7 @@ Transform:
   m_GameObject: {fileID: 832758054}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.82, y: 1.12, z: 11.92}
+  m_LocalPosition: {x: -4.82, y: 0.96000004, z: 11.92}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1168,7 +1168,7 @@ GameObject:
   - component: {fileID: 1053790157}
   m_Layer: 6
   m_Name: Cube (2)
-  m_TagString: Untagged
+  m_TagString: Cenario
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1273,7 +1273,7 @@ GameObject:
   - component: {fileID: 1273670774}
   m_Layer: 6
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Cenario
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1378,7 +1378,7 @@ GameObject:
   - component: {fileID: 1430788144}
   m_Layer: 6
   m_Name: Mesa01 (1)
-  m_TagString: Untagged
+  m_TagString: Cenario
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1483,7 +1483,7 @@ GameObject:
   - component: {fileID: 1490489813}
   m_Layer: 6
   m_Name: Mesa01
-  m_TagString: Untagged
+  m_TagString: Cenario
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1586,9 +1586,9 @@ GameObject:
   - component: {fileID: 1511943285}
   - component: {fileID: 1511943284}
   - component: {fileID: 1511943283}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Chao
-  m_TagString: Untagged
+  m_TagString: Cenario
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1783,7 +1783,7 @@ Transform:
   m_GameObject: {fileID: 1727154701}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -13.78, y: 1.02, z: 11.83}
+  m_LocalPosition: {x: -13.78, y: 0.86, z: 11.83}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1841,7 +1841,7 @@ GameObject:
   - component: {fileID: 2029293828}
   - component: {fileID: 2029293827}
   - component: {fileID: 2029293826}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Computer (1)
   m_TagString: DropArt
   m_Icon: {fileID: 0}
@@ -2037,7 +2037,7 @@ Transform:
   m_GameObject: {fileID: 2068383986}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.71, y: 1.13, z: 11.82}
+  m_LocalPosition: {x: 3.71, y: 0.97000027, z: 11.82}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

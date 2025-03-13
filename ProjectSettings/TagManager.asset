@@ -8,6 +8,7 @@ TagManager:
   - DropDev
   - DropArt
   - DropDesign
+  - Cenario
   layers:
   - Default
   - TransparentFX
@@ -16,7 +17,7 @@ TagManager:
   - Water
   - UI
   - Cenario
-  - 
+  - Ground
   - 
   - 
   - 
