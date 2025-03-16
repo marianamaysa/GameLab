@@ -10,6 +10,9 @@ TagManager:
   - DropDesign
   - Cenario
   - ComputerZone
+  - Devpeao
+  - Artpeao
+  - GameDpeao
   layers:
   - Default
   - TransparentFX
@@ -19,7 +22,7 @@ TagManager:
   - UI
   - Cenario
   - Ground
-  - 
+  - draggableLayer
   - 
   - 
   - 
@@ -46,4 +49,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: draggableLayer
+    uniqueID: 3566785837
     locked: 0
