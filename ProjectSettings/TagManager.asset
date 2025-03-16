@@ -9,6 +9,7 @@ TagManager:
   - DropArt
   - DropDesign
   - Cenario
+  - ComputerZone
   layers:
   - Default
   - TransparentFX
