@@ -2,19 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))] // Garante que o objeto tenha um Rigidbody anexado
+[RequireComponent(typeof(Rigidbody))]
 public class DragDrop : MonoBehaviour
 {
     private Vector3 offset;
     private bool dragging = false;
     private Rigidbody rb;
 
-    [SerializeField] private string computerZoneTag = "ComputerZone"; // Tag da área do computador
-    [SerializeField] private Vector3 alignedOffset = new Vector3(0, 0, -1); // Ajuste de posição ao alinhar
-    [SerializeField] private float alignmentSpeed = 5f; // Velocidade do alinhamento
+    [SerializeField] private string computerZoneTag = "ComputerZone";
+    [SerializeField] private Vector3 alignedOffset = new Vector3(0, 0, -1);
+    [SerializeField] private float alignmentSpeed = 5f;
+    [SerializeField] private LayerMask draggableLayer; // Adicionamos um LayerMask para evitar a ComputerZone no Raycast
 
-    private Transform currentComputerZone = null; // Guarda a referência do computador
-    private bool isInsideComputerZone = false; // Para saber se está dentro da zona ao soltar
+    private Transform currentComputerZone = null;
+    private bool isInsideComputerZone = false;
 
     private void Awake()
     {
@@ -33,7 +34,8 @@ public class DragDrop : MonoBehaviour
             switch (touch.phase)
             {
                 case TouchPhase.Began:
-                    if (Physics.Raycast(ray, out RaycastHit hit) && hit.transform == transform)
+                    // Agora o Raycast só atinge objetos na camada "draggableLayer"
+                    if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, draggableLayer) && hit.transform == transform)
                     {
                         offset = transform.position - GetTouchWorldPosition(touch);
                         dragging = true;
@@ -55,13 +57,11 @@ public class DragDrop : MonoBehaviour
                     dragging = false;
                     rb.useGravity = true;
 
-                    // Se o objeto for solto dentro da zona do computador, alinhe-o
                     if (isInsideComputerZone && currentComputerZone != null)
                     {
                         AlignWithComputer(currentComputerZone);
                     }
 
-                    // Reseta as variáveis
                     isInsideComputerZone = false;
                     currentComputerZone = null;
                     break;
@@ -102,7 +102,6 @@ public class DragDrop : MonoBehaviour
     {
         Vector3 targetPosition = computer.position + alignedOffset;
         Quaternion targetRotation = Quaternion.LookRotation(computer.forward);
-
         StartCoroutine(SmoothAlignment(targetPosition, targetRotation));
     }
 
