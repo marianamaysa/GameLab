@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -9,13 +8,14 @@ public class DragDrop : MonoBehaviour
     private bool dragging = false;
     private Rigidbody rb;
 
-    [SerializeField] private string computerZoneTag = "ComputerZone";
-    [SerializeField] private Vector3 alignedOffset = new Vector3(0, 0, -1);
+    [SerializeField] private string computerZoneTag = "ComputerZone"; // Tag da área do computador
+    [SerializeField] private Vector3 alignedOffset = new Vector3(0, 0, -1); // Ajuste de posição para alinhar o peão
     [SerializeField] private float alignmentSpeed = 5f;
-    [SerializeField] private LayerMask draggableLayer; // Adicionamos um LayerMask para evitar a ComputerZone no Raycast
+    [SerializeField] private LayerMask draggableLayer; // Layer para garantir que o Raycast acerte apenas o peão
 
     private Transform currentComputerZone = null;
     private bool isInsideComputerZone = false;
+    private bool isResolvingPopup = false;
 
     private void Awake()
     {
@@ -26,6 +26,8 @@ public class DragDrop : MonoBehaviour
 
     void Update()
     {
+        if (isResolvingPopup) return; // Impede que o peão seja movido enquanto resolve o pop-up
+
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
@@ -34,7 +36,6 @@ public class DragDrop : MonoBehaviour
             switch (touch.phase)
             {
                 case TouchPhase.Began:
-                    // Agora o Raycast só atinge objetos na camada "draggableLayer"
                     if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, draggableLayer) && hit.transform == transform)
                     {
                         offset = transform.position - GetTouchWorldPosition(touch);
@@ -59,7 +60,24 @@ public class DragDrop : MonoBehaviour
 
                     if (isInsideComputerZone && currentComputerZone != null)
                     {
-                        AlignWithComputer(currentComputerZone);
+                        Debug.Log("Chegou aq");
+                        // Verifica se o computador tem um pop-up e se o peão tem a tag necessária para resolvê-lo
+                        ComputerPopup compPopup = currentComputerZone.GetComponent<ComputerPopup>();
+                        if (compPopup != null && compPopup.CanResolvePopup(gameObject.tag))
+                        {
+                            Debug.Log("Resolvendo");
+                            // Alinha o peão com o computador e inicia a resolução do pop-up
+                            AlignWithComputer(currentComputerZone);
+                            StartCoroutine(compPopup.ResolvePopup());
+                            isResolvingPopup = true;
+                            StartCoroutine(ResetResolvingFlag(compPopup.resolutionTime));
+                        }
+                        else
+                        {
+                            Debug.Log("Pc sem popups");
+                            // Caso não haja pop-up ou o peão não seja o correto, apenas alinha o peão com o computador
+                            AlignWithComputer(currentComputerZone);
+                        }
                     }
 
                     isInsideComputerZone = false;
@@ -107,7 +125,7 @@ public class DragDrop : MonoBehaviour
 
     private IEnumerator SmoothAlignment(Vector3 targetPosition, Quaternion targetRotation)
     {
-        float elapsedTime = 0;
+        float elapsedTime = 0f;
         Vector3 startPosition = transform.position;
         Quaternion startRotation = transform.rotation;
 
@@ -118,8 +136,13 @@ public class DragDrop : MonoBehaviour
             transform.rotation = Quaternion.Slerp(startRotation, targetRotation, elapsedTime);
             yield return null;
         }
-
         transform.position = targetPosition;
         transform.rotation = targetRotation;
+    }
+
+    private IEnumerator ResetResolvingFlag(float time)
+    {
+        yield return new WaitForSeconds(time);
+        isResolvingPopup = false;
     }
 }
