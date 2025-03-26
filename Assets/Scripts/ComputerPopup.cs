@@ -48,6 +48,8 @@ public class ComputerPopup : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log($"hasPopup: {hasPopup}, currentPopup.requiredPawnTag: {currentPopup?.requiredPawnTag}");
+        Debug.Log("Tag do objeto colidido: " + other.tag);
         Debug.Log("Colidu com o popup");
         if (hasPopup && other.CompareTag(currentPopup.requiredPawnTag))
         {

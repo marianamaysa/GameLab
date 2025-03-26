@@ -68,6 +68,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6470063796522020463, guid: 3d27019910a205144a57a24e0f385db1,
+        type: 3}
+      propertyPath: requiredPawnTag
+      value: Artpeao
+      objectReference: {fileID: 0}
     - target: {fileID: 8039015641035965164, guid: 3d27019910a205144a57a24e0f385db1,
         type: 3}
       propertyPath: m_Materials.Array.data[0]

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 681654861572996281}
   - component: {fileID: 8039015641035965164}
   - component: {fileID: 3447756964881258951}
+  - component: {fileID: 6470063796522020463}
   m_Layer: 0
   m_Name: Pop up Azul
   m_TagString: DropDev
@@ -105,3 +106,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 3.7004337, z: 20}
   m_Center: {x: 0, y: -1, z: -10}
+--- !u!114 &6470063796522020463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2752166625862640257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82f7b2a28f0fb684c9d9ef43d3fdf3e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  requiredPawnTag: Devpeao
+  resolutionTime: 3
+  newPawnSpawnPoint: {fileID: 0}
