@@ -13,6 +13,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Pop up Verde Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 2752166625862640257, guid: 3d27019910a205144a57a24e0f385db1,
+        type: 3}
+      propertyPath: m_TagString
+      value: Artpeao
+      objectReference: {fileID: 0}
     - target: {fileID: 3791492617903588295, guid: 3d27019910a205144a57a24e0f385db1,
         type: 3}
       propertyPath: m_LocalPosition.x

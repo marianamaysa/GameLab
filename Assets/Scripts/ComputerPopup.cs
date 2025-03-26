@@ -48,8 +48,10 @@ public class ComputerPopup : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Colidu com o popup");
         if (hasPopup && other.CompareTag(currentPopup.requiredPawnTag))
         {
+            Debug.Log("Resolvendo");
             StartCoroutine(ResolvePopup());
         }
     }
