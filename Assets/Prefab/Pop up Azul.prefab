@@ -118,6 +118,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82f7b2a28f0fb684c9d9ef43d3fdf3e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  requiredPawnTag: Devpeao
+  requiredPawnTag: DropDev
   resolutionTime: 3
   newPawnSpawnPoint: {fileID: 0}
