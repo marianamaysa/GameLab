@@ -42,6 +42,13 @@ public class PopUpController : MonoBehaviour
         Debug.Log("Resolvendo popup...");
         yield return new WaitForSeconds(resolutionTime);
 
+        TimerLevel timer = FindObjectOfType<TimerLevel>();
+        if (timer != null)
+        {
+            timer.AddTime(5f);
+            Debug.Log("+5 segundos adicionados ao timer!");
+        }
+
         Debug.Log("Popup concluído com sucesso!");
         Destroy(gameObject);
 
