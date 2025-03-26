@@ -71,6 +71,12 @@ public class ComputerPopup : MonoBehaviour
         Debug.Log($"[ComputerPopup] Iniciando resolução do pop-up '{currentPopupObject?.name}'...");
         yield return new WaitForSeconds(resolutionTime);
 
+        TimerLevel timer = FindObjectOfType<TimerLevel>();
+        if(timer != null)
+        {
+            timer.AddTime(5f);
+        }
+
         if (currentPopupObject != null)
         {
             Destroy(currentPopupObject);
