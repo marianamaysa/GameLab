@@ -6,6 +6,9 @@ public class PopupData
 {
     public GameObject popupPrefab;  // Prefab do pop-up
     public string requiredPawnTag;  // Tag do peão que resolve esse pop-up
+    public AudioClip popupSound; // Armazena audio do popup
+    public AudioClip resolvedSound; // Audio ao resolver o popup
+
 }
 
 public class ComputerPopup : MonoBehaviour
@@ -21,9 +24,17 @@ public class ComputerPopup : MonoBehaviour
     private bool hasPopup = false;
     private GameObject currentPopupObject = null;
     private PopupData currentPopup;
+    private AudioSource audioSource;
 
     private void Start()
     {
+        // Verifica se possui o componente de audio, se nao tiver ele vai ser adicionado
+        audioSource = GetComponent<AudioSource>();
+        if(audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
         StartCoroutine(SpawnPopupRoutine());
     }
 
@@ -56,6 +67,11 @@ public class ComputerPopup : MonoBehaviour
         currentPopupObject.transform.localScale = popupScale;
 
         Debug.Log($"[ComputerPopup] Pop-up '{currentPopupObject.name}' apareceu em {transform.parent.name}! Requer: {currentPopup.requiredPawnTag}");
+
+        if (currentPopup.popupSound != null) // Toca o áudio específico, se houver
+        {
+            audioSource.PlayOneShot(currentPopup.popupSound);
+        }
     }
 
     public bool CanResolvePopup(string pawnTag)
@@ -70,6 +86,12 @@ public class ComputerPopup : MonoBehaviour
     {
         Debug.Log($"[ComputerPopup] Iniciando resolução do pop-up '{currentPopupObject?.name}'...");
         yield return new WaitForSeconds(resolutionTime);
+
+        // Toca o áudio de resolução, se houver
+        if (currentPopup.resolvedSound != null)
+        {
+            audioSource.PlayOneShot(currentPopup.resolvedSound);
+        }
 
         TimerLevel timer = FindObjectOfType<TimerLevel>();
         if(timer != null)
