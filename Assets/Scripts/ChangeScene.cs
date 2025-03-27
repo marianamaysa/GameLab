@@ -7,6 +7,11 @@ public class ChangeScene : MonoBehaviour
 {
     public void Change(string scene)
     {
+
+        if(scene == "Fase 1" && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.GetComponent<AudioSource>().Stop();
+        }
         SceneManager.LoadScene(scene);
     }
 
