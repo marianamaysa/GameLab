@@ -359,7 +359,7 @@ GameObject:
   - component: {fileID: 232335667}
   - component: {fileID: 232335669}
   - component: {fileID: 232335668}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Txt_Start
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -587,7 +587,7 @@ GameObject:
   - component: {fileID: 922024975}
   - component: {fileID: 922024977}
   - component: {fileID: 922024976}
-  m_Layer: 5
+  m_Layer: 7
   m_Name: Logo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -601,7 +601,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 922024974}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -610,7 +610,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 13.0835, y: 55}
+  m_AnchoredPosition: {x: 13.083496, y: 55}
   m_SizeDelta: {x: 512.407, y: 288.1}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &922024976
@@ -627,7 +627,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1082,7 +1082,7 @@ GameObject:
   - component: {fileID: 1683929707}
   - component: {fileID: 1683929706}
   - component: {fileID: 1683929705}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Btn_Start
   m_TagString: Untagged
   m_Icon: {fileID: 0}
