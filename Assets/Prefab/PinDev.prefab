@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 8592013768377429133}
   m_Layer: 8
   m_Name: PinDev
-  m_TagString: DropDev
+  m_TagString: Devpeao
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -107,9 +107,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
-  m_Height: 2
+  m_Height: 2.5602748
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: -0.1198632, z: 0}
 --- !u!114 &124268735175305986
 MonoBehaviour:
   m_ObjectHideFlags: 0
