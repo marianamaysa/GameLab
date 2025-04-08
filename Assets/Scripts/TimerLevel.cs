@@ -47,4 +47,9 @@ public class TimerLevel : MonoBehaviour
 
         timerText.text = string.Format("{0:00}:{1:00}", mins, secs);
     }
+
+    public void AddTime(float timer)
+    {
+        currentTime += timer;
+    }
 }
