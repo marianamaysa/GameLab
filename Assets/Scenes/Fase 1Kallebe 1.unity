@@ -785,7 +785,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45aa4ca037e19154d98a097960d75336, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startTimer: 301
+  startTimer: 61
   timerText: {fileID: 1765139988}
 --- !u!4 &832758059 stripped
 Transform:
@@ -2184,7 +2184,22 @@ PrefabInstance:
     - target: {fileID: 5049209127224408632, guid: 6f01a48c85a5cfb4c9150a088d0bb1ab,
         type: 3}
       propertyPath: m_TagString
-      value: Artpeao
+      value: GameDpeao
+      objectReference: {fileID: 0}
+    - target: {fileID: 7296096720034650455, guid: 6f01a48c85a5cfb4c9150a088d0bb1ab,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7296096720034650455, guid: 6f01a48c85a5cfb4c9150a088d0bb1ab,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7296096720034650455, guid: 6f01a48c85a5cfb4c9150a088d0bb1ab,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7296096720034650455, guid: 6f01a48c85a5cfb4c9150a088d0bb1ab,
         type: 3}
@@ -2325,7 +2340,22 @@ PrefabInstance:
     - target: {fileID: 2172017820264454607, guid: 9809d4bb82034f64182bcf386e3f7cdc,
         type: 3}
       propertyPath: m_TagString
-      value: Devpeao
+      value: Artpeao
+      objectReference: {fileID: 0}
+    - target: {fileID: 6383254040121601528, guid: 9809d4bb82034f64182bcf386e3f7cdc,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6383254040121601528, guid: 9809d4bb82034f64182bcf386e3f7cdc,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6383254040121601528, guid: 9809d4bb82034f64182bcf386e3f7cdc,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6383254040121601528, guid: 9809d4bb82034f64182bcf386e3f7cdc,
         type: 3}
@@ -2397,6 +2427,21 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1506219853015065749, guid: 99b8666280174a14aaa4e6b2c0dc1df0,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1506219853015065749, guid: 99b8666280174a14aaa4e6b2c0dc1df0,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1506219853015065749, guid: 99b8666280174a14aaa4e6b2c0dc1df0,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1506219853015065749, guid: 99b8666280174a14aaa4e6b2c0dc1df0,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: -4.82
       objectReference: {fileID: 0}
@@ -2453,7 +2498,7 @@ PrefabInstance:
     - target: {fileID: 2311285182722363560, guid: 99b8666280174a14aaa4e6b2c0dc1df0,
         type: 3}
       propertyPath: m_TagString
-      value: GameDpeao
+      value: Devpeao
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
