@@ -1,78 +1,148 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))] // Garante que o objeto sempre tenha um Rigidbody anexado
+[RequireComponent(typeof(Rigidbody))]
 public class DragDrop : MonoBehaviour
 {
-    private Vector3 offset; // Armazena a diferença entre a posição do objeto e o toque inicial
-    [SerializeField] private string destinationTag; // Tag do objeto de destino onde o item pode ser solto
-    private bool dragging = false; // Indica se o objeto está sendo arrastado
-    private Rigidbody rb; // Referência ao Rigidbody do objeto
+    private Vector3 offset;
+    private bool dragging = false;
+    private Rigidbody rb;
+
+    [SerializeField] private string computerZoneTag = "ComputerZone"; // Tag da área do computador
+    [SerializeField] private Vector3 alignedOffset = new Vector3(0, 0, -1); // Ajuste de posição para alinhar o peão
+    [SerializeField] private float alignmentSpeed = 5f;
+    [SerializeField] private LayerMask draggableLayer; // Layer para garantir que o Raycast acerte apenas o peão
+
+    private Transform currentComputerZone = null;
+    private bool isInsideComputerZone = false;
+    private bool isResolvingPopup = false;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>(); // Obtém o Rigidbody do objeto
-        rb.collisionDetectionMode = CollisionDetectionMode.Continuous; // Melhora a precisão da detecção de colisão em movimento rápido
-        rb.useGravity = true; // Mantém a gravidade ativada por padrão
+        rb = GetComponent<Rigidbody>();
+        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        rb.useGravity = true;
     }
 
     void Update()
     {
-        if (Input.touchCount > 0) // Verifica se há toque na tela
+        if (isResolvingPopup) return; // Impede que o peão seja movido enquanto resolve o pop-up
+
+        if (Input.touchCount > 0)
         {
-            Touch touch = Input.GetTouch(0); // Obtém o primeiro toque detectado
-            Ray ray = Camera.main.ScreenPointToRay(touch.position); // Cria um raio a partir da câmera na direção do toque
+            Touch touch = Input.GetTouch(0);
+            Ray ray = Camera.main.ScreenPointToRay(touch.position);
 
             switch (touch.phase)
             {
-                case TouchPhase.Began: // Quando o toque começa
-                    if (Physics.Raycast(ray, out RaycastHit hit) && hit.transform == transform) // Verifica se o toque foi no objeto
+                case TouchPhase.Began:
+                    if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, draggableLayer) && hit.transform == transform)
                     {
-                        offset = transform.position - GetTouchWorldPosition(touch); // Calcula a diferença entre o toque e a posição do objeto
-                        dragging = true; // Define que o objeto está sendo arrastado
-                        rb.useGravity = false; // Desativa a gravidade enquanto arrasta
-                        rb.velocity = Vector3.zero; // Para qualquer movimento anterior
-                        rb.angularVelocity = Vector3.zero; // Para qualquer rotação inesperada
+                        offset = transform.position - GetTouchWorldPosition(touch);
+                        dragging = true;
+                        rb.useGravity = false;
+                        rb.velocity = Vector3.zero;
+                        rb.angularVelocity = Vector3.zero;
                     }
                     break;
 
-                case TouchPhase.Moved: // Quando o toque se move na tela
+                case TouchPhase.Moved:
                     if (dragging)
                     {
-                        Vector3 targetPos = GetTouchWorldPosition(touch) + offset; // Atualiza a posição do objeto de acordo com o toque
-                        rb.MovePosition(targetPos); // Move o objeto suavemente para a nova posição
+                        Vector3 targetPos = GetTouchWorldPosition(touch) + offset;
+                        rb.MovePosition(targetPos);
                     }
                     break;
 
-                case TouchPhase.Ended: // Quando o toque termina
-                    if (dragging)
-                    {
-                        dragging = false; // Define que o objeto não está mais sendo arrastado
-                        RaycastHit dropHit;
+                case TouchPhase.Ended:
+                    dragging = false;
+                    rb.useGravity = true;
 
-                        // Verifica se há um destino válido próximo ao soltar
-                        if (Physics.Raycast(ray, out dropHit) && dropHit.transform.CompareTag(destinationTag))
+                    if (isInsideComputerZone && currentComputerZone != null)
+                    {
+                        Debug.Log("Chegou aq");
+                        // Verifica se o computador tem um pop-up e se o peão tem a tag necessária para resolvê-lo
+                        ComputerPopup compPopup = currentComputerZone.GetComponent<ComputerPopup>();
+                        if (compPopup != null && compPopup.CanResolvePopup(gameObject.tag))
                         {
-                            rb.MovePosition(dropHit.transform.position); // Move o objeto para a posição do destino
+                            Debug.Log("Resolvendo");
+                            // Alinha o peão com o computador e inicia a resolução do pop-up
+                            AlignWithComputer(currentComputerZone);
+                            StartCoroutine(compPopup.ResolvePopup());
+                            isResolvingPopup = true;
+                            StartCoroutine(ResetResolvingFlag(compPopup.resolutionTime));
                         }
-
-                        rb.useGravity = true; // Reativa a gravidade ao soltar
+                        else
+                        {
+                            Debug.Log("Pc sem popups");
+                            // Caso não haja pop-up ou o peão não seja o correto, apenas alinha o peão com o computador
+                            AlignWithComputer(currentComputerZone);
+                        }
                     }
+
+                    isInsideComputerZone = false;
+                    currentComputerZone = null;
                     break;
             }
         }
     }
 
-    // Converte a posição do toque na tela para a posição no mundo, garantindo que ele fique no mesmo plano do objeto
     Vector3 GetTouchWorldPosition(Touch touch)
     {
-        Plane plane = new Plane(Vector3.up, transform.position); // Cria um plano horizontal no nível do objeto
-        Ray ray = Camera.main.ScreenPointToRay(touch.position); // Cria um raio na direção do toque
-        if (plane.Raycast(ray, out float distance)) // Verifica onde o raio intersecta o plano
+        Plane plane = new Plane(Vector3.up, transform.position);
+        Ray ray = Camera.main.ScreenPointToRay(touch.position);
+        if (plane.Raycast(ray, out float distance))
         {
-            return ray.GetPoint(distance); // Retorna a posição exata do toque no mundo 3D
+            return ray.GetPoint(distance);
         }
-        return transform.position; // Se não houver interseção, mantém a posição atual
+        return transform.position;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag(computerZoneTag))
+        {
+            isInsideComputerZone = true;
+            currentComputerZone = other.transform;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag(computerZoneTag))
+        {
+            isInsideComputerZone = false;
+            currentComputerZone = null;
+        }
+    }
+
+    private void AlignWithComputer(Transform computer)
+    {
+        Vector3 targetPosition = computer.position + alignedOffset;
+        Quaternion targetRotation = Quaternion.LookRotation(computer.forward);
+        StartCoroutine(SmoothAlignment(targetPosition, targetRotation));
+    }
+
+    private IEnumerator SmoothAlignment(Vector3 targetPosition, Quaternion targetRotation)
+    {
+        float elapsedTime = 0f;
+        Vector3 startPosition = transform.position;
+        Quaternion startRotation = transform.rotation;
+
+        while (elapsedTime < 1f)
+        {
+            elapsedTime += Time.deltaTime * alignmentSpeed;
+            transform.position = Vector3.Lerp(startPosition, targetPosition, elapsedTime);
+            transform.rotation = Quaternion.Slerp(startRotation, targetRotation, elapsedTime);
+            yield return null;
+        }
+        transform.position = targetPosition;
+        transform.rotation = targetRotation;
+    }
+
+    private IEnumerator ResetResolvingFlag(float time)
+    {
+        yield return new WaitForSeconds(time);
+        isResolvingPopup = false;
     }
 }
