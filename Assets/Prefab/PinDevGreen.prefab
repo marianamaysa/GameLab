@@ -131,6 +131,8 @@ MonoBehaviour:
   computerZoneLayer:
     serializedVersion: 2
     m_Bits: 512
+  transparentMaterial: {fileID: 2100000, guid: f5670fe53bca1844ca32fb67d8937add, type: 2}
+  popupResolutionTime: 3
 --- !u!54 &9138794578453556966
 Rigidbody:
   m_ObjectHideFlags: 0
