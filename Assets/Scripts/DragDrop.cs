@@ -7,14 +7,14 @@ public class DragDrop : MonoBehaviour
     private Vector3 offset;
     private bool dragging = false;
     private Rigidbody rb;
-    private GameObject clone; // Clone semi-transparente do peão
+    private GameObject ghost; // ghost semi-transparente do peão
 
     [SerializeField] private string computerZoneTag = "ComputerZone";
     [SerializeField] private Vector3 alignedOffset = new Vector3(0, 0, -1);
     [SerializeField] private float alignmentSpeed = 5f;
     [SerializeField] private LayerMask draggableLayer;
     [SerializeField] private LayerMask computerZoneLayer;
-    [SerializeField] private Material transparentMaterial; // Material semi-transparente para o clone
+    [SerializeField] private Material transparentMaterial; // Material semi-transparente para o ghost
 
     // Tempo para resolver o popup (configurável via Inspector)
     [SerializeField] private float popupResolutionTime = 3f;
@@ -49,26 +49,35 @@ public class DragDrop : MonoBehaviour
                         rb.velocity = Vector3.zero;
                         rb.angularVelocity = Vector3.zero;
 
-                        // Instancia o clone semi-transparente
-                        clone = Instantiate(gameObject, transform.position, transform.rotation);
-                        ApplyTransparency(clone);
+                        // Instancia o ghost semi-transparente
+                        ghost = Instantiate(gameObject, transform.position, transform.rotation);
+                        ApplyTransparency(ghost);
+                        ghost.layer = LayerMask.NameToLayer("draggableLayer");
 
-                        // Opcional: verificar imediatamente se o clone está em uma zona (caso comece dentro)
-                        CheckForComputerZone(clone.transform.position);
+                        // Desativa a colisão entre o peão e o ghost
+                        Collider ghostCollider = ghost.GetComponent<Collider>();
+                        Collider pawnCollider = GetComponent<Collider>();
+                        if (ghostCollider != null && pawnCollider != null)
+                        {
+                            Physics.IgnoreCollision(ghostCollider, pawnCollider, true);
+                        }
+
+                        // Opcional: verificar imediatamente se o ghost está em uma zona (caso comece dentro)
+                        CheckForComputerZone(ghost.transform.position);
                     }
                     break;
 
                 case TouchPhase.Moved:
-                    if (dragging && clone != null)
+                    if (dragging && ghost != null)
                     {
                         Vector3 targetPos = GetTouchWorldPosition(touch) + offset;
-                        clone.transform.position = targetPos;
+                        ghost.transform.position = targetPos;
 
-                        // Durante o arrasto, verifica se o clone está dentro da zona do computador
-                        CheckForComputerZone(clone.transform.position);
+                        // Durante o arrasto, verifica se o ghost está dentro da zona do computador
+                        CheckForComputerZone(ghost.transform.position);
                         if (currentComputerZone != null)
                         {
-                            Debug.Log("Peão (clone) está dentro da zona do computador enquanto arrasta.");
+                            Debug.Log("Peão (ghost) está dentro da zona do computador enquanto arrasta.");
                         }
                     }
                     break;
@@ -79,10 +88,10 @@ public class DragDrop : MonoBehaviour
                         dragging = false;
                         rb.useGravity = true;
 
-                        // Use a posição final do clone, se existir, para a verificação da zona
-                        if (clone != null)
+                        // Use a posição final do ghost, se existir, para a verificação da zona
+                        if (ghost != null)
                         {
-                            CheckForComputerZone(clone.transform.position);
+                            CheckForComputerZone(ghost.transform.position);
                         }
                         else
                         {
@@ -107,12 +116,21 @@ public class DragDrop : MonoBehaviour
                                 AlignWithComputer(currentComputerZone);
                             }
                         }
+                        // Restaura o render
+                        //SetRenderersEnable(true);
 
-                        // Destrói o clone após o arrasto
-                        if (clone != null)
+                        // Reativa a colisão entre o peão e o ghost antes de destruí-lo
+                        if (ghost != null)
                         {
-                            Destroy(clone);
-                            clone = null;
+                            Collider ghostCollider = ghost.GetComponent<Collider>();
+                            Collider pawnCollider = GetComponent<Collider>();
+                            if (ghostCollider != null && pawnCollider != null)
+                            {
+                                Physics.IgnoreCollision(ghostCollider, pawnCollider, false);
+                            }
+
+                            Destroy(ghost);
+                            ghost = null;
                         }
 
                         currentComputerZone = null;
@@ -188,7 +206,7 @@ public class DragDrop : MonoBehaviour
     }
 
     /// <summary>
-    /// Aplica material semi-transparente a todos os renderers do objeto para criar efeito de clone.
+    /// Aplica material semi-transparente a todos os renderers do objeto para criar efeito de ghost.
     /// </summary>
     /// <param name="obj">GameObject a ser modificado</param>
     private void ApplyTransparency(GameObject obj)
