@@ -1027,7 +1027,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a282d6d72f5724c86f670d2b37053a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destinationTag: DropArt
+  computerZoneTag: ComputerZone
+  alignedOffset: {x: 0, y: 0, z: -1}
+  alignmentSpeed: 5
+  draggableLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1828,7 +1833,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a282d6d72f5724c86f670d2b37053a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destinationTag: DropDev
+  computerZoneTag: ComputerZone
+  alignedOffset: {x: 0, y: 0, z: -1}
+  alignmentSpeed: 5
+  draggableLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &2029293825
 GameObject:
   m_ObjectHideFlags: 0
@@ -2082,7 +2092,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a282d6d72f5724c86f670d2b37053a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destinationTag: DropDesign
+  computerZoneTag: ComputerZone
+  alignedOffset: {x: 0, y: 0, z: -1}
+  alignmentSpeed: 5
+  draggableLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
