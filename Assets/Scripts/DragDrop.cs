@@ -7,12 +7,14 @@ public class DragDrop : MonoBehaviour
     private Vector3 offset;
     private bool dragging = false;
     private Rigidbody rb;
+    private GameObject clone; // Clone semi-transparente do peão
 
     [SerializeField] private string computerZoneTag = "ComputerZone";
     [SerializeField] private Vector3 alignedOffset = new Vector3(0, 0, -1);
     [SerializeField] private float alignmentSpeed = 5f;
     [SerializeField] private LayerMask draggableLayer;
     [SerializeField] private LayerMask computerZoneLayer;
+    [SerializeField] private Material transparentMaterial; // Material semi-transparente para o clone
 
     private Transform currentComputerZone = null;
     private bool isResolvingPopup = false;
@@ -44,23 +46,20 @@ public class DragDrop : MonoBehaviour
                         rb.velocity = Vector3.zero;
                         rb.angularVelocity = Vector3.zero;
 
-                        CheckForComputerZone(); // <- Checa manualmente se já está dentro
+                        // Criar clone semi-transparente
+                        clone = Instantiate(gameObject, transform.position, transform.rotation);
+                        ApplyTransparency(clone);
                     }
                     break;
 
                 case TouchPhase.Moved:
-                    if (dragging)
+                    if (dragging && clone != null)
                     {
                         Vector3 targetPos = GetTouchWorldPosition(touch) + offset;
-                        rb.MovePosition(targetPos);
+                        clone.transform.position = targetPos;
 
-                        // Verifica constantemente se está dentro da zona durante o arrasto
-                        CheckForComputerZone();
-
-                        if (currentComputerZone != null)
-                        {
-                            Debug.Log("Peão está dentro da zona do computador enquanto arrasta.");
-                        }
+                        // Verifica constantemente se o clone está dentro da zona durante o arrasto
+                        CheckForComputerZone(clone.transform.position);
                     }
                     break;
 
@@ -70,16 +69,11 @@ public class DragDrop : MonoBehaviour
                         dragging = false;
                         rb.useGravity = true;
 
-                        CheckForComputerZone(); // <- Checa novamente ao soltar
-
                         if (currentComputerZone != null)
                         {
-                            Debug.Log("Soltou dentro da zona.");
-
                             ComputerPopup compPopup = currentComputerZone.GetComponent<ComputerPopup>();
                             if (compPopup != null && compPopup.CanResolvePopup(gameObject.tag))
                             {
-                                Debug.Log("Resolvendo pop-up!");
                                 AlignWithComputer(currentComputerZone);
                                 StartCoroutine(compPopup.ResolvePopup());
                                 isResolvingPopup = true;
@@ -87,9 +81,15 @@ public class DragDrop : MonoBehaviour
                             }
                             else
                             {
-                                Debug.Log("Zona válida, mas sem pop-up ou peão errado.");
                                 AlignWithComputer(currentComputerZone);
                             }
+                        }
+
+                        // Destruir o clone após o arrasto
+                        if (clone != null)
+                        {
+                            Destroy(clone);
+                            clone = null;
                         }
 
                         currentComputerZone = null;
@@ -110,10 +110,9 @@ public class DragDrop : MonoBehaviour
         return transform.position;
     }
 
-    // Substitui completamente OnTriggerEnter/Exit com uma detecção confiável
-    private void CheckForComputerZone()
+    private void CheckForComputerZone(Vector3 position)
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, 0.5f, computerZoneLayer);
+        Collider[] colliders = Physics.OverlapSphere(position, 0.5f, computerZoneLayer);
         currentComputerZone = null;
 
         foreach (var col in colliders)
@@ -155,5 +154,14 @@ public class DragDrop : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         isResolvingPopup = false;
+    }
+
+    private void ApplyTransparency(GameObject obj)
+    {
+        Renderer[] renderers = obj.GetComponentsInChildren<Renderer>();
+        foreach (Renderer rend in renderers)
+        {
+            rend.material = transparentMaterial;
+        }
     }
 }
