@@ -1,4 +1,4 @@
-using System.Collections;
+Ôªøusing System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -8,13 +8,13 @@ public class DragDrop : MonoBehaviour
     private bool dragging = false;
     private Rigidbody rb;
 
-    [SerializeField] private string computerZoneTag = "ComputerZone"; // Tag da ·rea do computador
-    [SerializeField] private Vector3 alignedOffset = new Vector3(0, 0, -1); // Ajuste de posiÁ„o para alinhar o pe„o
+    [SerializeField] private string computerZoneTag = "ComputerZone";
+    [SerializeField] private Vector3 alignedOffset = new Vector3(0, 0, -1);
     [SerializeField] private float alignmentSpeed = 5f;
-    [SerializeField] private LayerMask draggableLayer; // Layer para garantir que o Raycast acerte apenas o pe„o
+    [SerializeField] private LayerMask draggableLayer;
+    [SerializeField] private LayerMask computerZoneLayer;
 
     private Transform currentComputerZone = null;
-    private bool isInsideComputerZone = false;
     private bool isResolvingPopup = false;
 
     private void Awake()
@@ -26,7 +26,7 @@ public class DragDrop : MonoBehaviour
 
     void Update()
     {
-        if (isResolvingPopup) return; // Impede que o pe„o seja movido enquanto resolve o pop-up
+        if (isResolvingPopup) return;
 
         if (Input.touchCount > 0)
         {
@@ -43,6 +43,8 @@ public class DragDrop : MonoBehaviour
                         rb.useGravity = false;
                         rb.velocity = Vector3.zero;
                         rb.angularVelocity = Vector3.zero;
+
+                        CheckForComputerZone(); // <- Checa manualmente se j√° est√° dentro
                     }
                     break;
 
@@ -51,37 +53,47 @@ public class DragDrop : MonoBehaviour
                     {
                         Vector3 targetPos = GetTouchWorldPosition(touch) + offset;
                         rb.MovePosition(targetPos);
+
+                        // Verifica constantemente se est√° dentro da zona durante o arrasto
+                        CheckForComputerZone();
+
+                        if (currentComputerZone != null)
+                        {
+                            Debug.Log("Pe√£o est√° dentro da zona do computador enquanto arrasta.");
+                        }
                     }
                     break;
 
                 case TouchPhase.Ended:
-                    dragging = false;
-                    rb.useGravity = true;
-
-                    if (isInsideComputerZone && currentComputerZone != null)
+                    if (dragging)
                     {
-                        Debug.Log("Chegou aq");
-                        // Verifica se o computador tem um pop-up e se o pe„o tem a tag necess·ria para resolvÍ-lo
-                        ComputerPopup compPopup = currentComputerZone.GetComponent<ComputerPopup>();
-                        if (compPopup != null && compPopup.CanResolvePopup(gameObject.tag))
-                        {
-                            Debug.Log("Resolvendo");
-                            // Alinha o pe„o com o computador e inicia a resoluÁ„o do pop-up
-                            AlignWithComputer(currentComputerZone);
-                            StartCoroutine(compPopup.ResolvePopup());
-                            isResolvingPopup = true;
-                            StartCoroutine(ResetResolvingFlag(compPopup.resolutionTime));
-                        }
-                        else
-                        {
-                            Debug.Log("Pc sem popups");
-                            // Caso n„o haja pop-up ou o pe„o n„o seja o correto, apenas alinha o pe„o com o computador
-                            AlignWithComputer(currentComputerZone);
-                        }
-                    }
+                        dragging = false;
+                        rb.useGravity = true;
 
-                    isInsideComputerZone = false;
-                    currentComputerZone = null;
+                        CheckForComputerZone(); // <- Checa novamente ao soltar
+
+                        if (currentComputerZone != null)
+                        {
+                            Debug.Log("Soltou dentro da zona.");
+
+                            ComputerPopup compPopup = currentComputerZone.GetComponent<ComputerPopup>();
+                            if (compPopup != null && compPopup.CanResolvePopup(gameObject.tag))
+                            {
+                                Debug.Log("Resolvendo pop-up!");
+                                AlignWithComputer(currentComputerZone);
+                                StartCoroutine(compPopup.ResolvePopup());
+                                isResolvingPopup = true;
+                                StartCoroutine(ResetResolvingFlag(compPopup.resolutionTime));
+                            }
+                            else
+                            {
+                                Debug.Log("Zona v√°lida, mas sem pop-up ou pe√£o errado.");
+                                AlignWithComputer(currentComputerZone);
+                            }
+                        }
+
+                        currentComputerZone = null;
+                    }
                     break;
             }
         }
@@ -98,21 +110,19 @@ public class DragDrop : MonoBehaviour
         return transform.position;
     }
 
-    private void OnTriggerEnter(Collider other)
+    // Substitui completamente OnTriggerEnter/Exit com uma detec√ß√£o confi√°vel
+    private void CheckForComputerZone()
     {
-        if (other.CompareTag(computerZoneTag))
-        {
-            isInsideComputerZone = true;
-            currentComputerZone = other.transform;
-        }
-    }
+        Collider[] colliders = Physics.OverlapSphere(transform.position, 0.5f, computerZoneLayer);
+        currentComputerZone = null;
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag(computerZoneTag))
+        foreach (var col in colliders)
         {
-            isInsideComputerZone = false;
-            currentComputerZone = null;
+            if (col.CompareTag(computerZoneTag))
+            {
+                currentComputerZone = col.transform;
+                break;
+            }
         }
     }
 
@@ -136,6 +146,7 @@ public class DragDrop : MonoBehaviour
             transform.rotation = Quaternion.Slerp(startRotation, targetRotation, elapsedTime);
             yield return null;
         }
+
         transform.position = targetPosition;
         transform.rotation = targetRotation;
     }

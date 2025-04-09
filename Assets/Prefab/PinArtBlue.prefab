@@ -128,6 +128,9 @@ MonoBehaviour:
   draggableLayer:
     serializedVersion: 2
     m_Bits: 256
+  computerZoneLayer:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!54 &8592013768377429133
 Rigidbody:
   m_ObjectHideFlags: 0
