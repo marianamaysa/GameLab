@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8039015641035965164}
   - component: {fileID: 3447756964881258951}
   m_Layer: 0
-  m_Name: Pop up Azul
+  m_Name: Pop up Verde
   m_TagString: DropDev
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

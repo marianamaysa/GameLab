@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8705609348564189803}
   - component: {fileID: 3752550100067728016}
   - component: {fileID: 6378235761434834048}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Computer
   m_TagString: ComputerZone
   m_Icon: {fileID: 0}
@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 461447586101639819}
   - component: {fileID: 8105107350682287880}
   - component: {fileID: 3062467995093009648}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: InteractionZone
   m_TagString: ComputerZone
   m_Icon: {fileID: 0}
@@ -159,8 +159,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.0873833, y: 1, z: 16.44204}
-  m_Center: {x: -0.040056657, y: 0, z: -4.6906805}
+  m_Size: {x: 2.0873833, y: 1, z: 21.138494}
+  m_Center: {x: -0.040056657, y: 0, z: -7.0389085}
 --- !u!114 &8105107350682287880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -174,24 +174,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   popups:
-  - popupPrefab: {fileID: 2752166625862640257, guid: 3d27019910a205144a57a24e0f385db1,
+  - popupPrefab: {fileID: 3393832235150405564, guid: 5b614e873368080419d18b605978a08c,
       type: 3}
-    requiredPawnTag: Devpeao
+    requiredPawnTag: Artpeao
     popupSound: {fileID: 8300000, guid: 25ee5a0881fe0bc498221e12d1089c5a, type: 3}
     resolvedSound: {fileID: 8300000, guid: 018d8311d1c3aec42925a72ec78e67ad, type: 3}
   - popupPrefab: {fileID: 8396975593616770012, guid: 889e9a4cc8d2b7347a75fbf3396888ea,
       type: 3}
-    requiredPawnTag: Artpeao
+    requiredPawnTag: GameDpeao
     popupSound: {fileID: 8300000, guid: 0cb3940a0043de649a31d58c66c77247, type: 3}
     resolvedSound: {fileID: 8300000, guid: 018d8311d1c3aec42925a72ec78e67ad, type: 3}
-  - popupPrefab: {fileID: 3393832235150405564, guid: 5b614e873368080419d18b605978a08c,
+  - popupPrefab: {fileID: 2752166625862640257, guid: 3d27019910a205144a57a24e0f385db1,
       type: 3}
-    requiredPawnTag: GameDpeao
+    requiredPawnTag: Devpeao
     popupSound: {fileID: 8300000, guid: 8306419c8c4751a4d8be2cbe80d30930, type: 3}
     resolvedSound: {fileID: 8300000, guid: 018d8311d1c3aec42925a72ec78e67ad, type: 3}
-  popupIntervalMin: 5
-  popupIntervalMax: 10
-  resolutionTime: 3
+  popupIntervalMin: 7
+  popupIntervalMax: 15
+  resolutionTime: 2.5
   popupScale: {x: 1, y: 1, z: 0.18142}
 --- !u!82 &3062467995093009648
 AudioSource:

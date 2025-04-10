@@ -1,4 +1,4 @@
-using System.Collections;
+Ôªøusing System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -7,14 +7,19 @@ public class DragDrop : MonoBehaviour
     private Vector3 offset;
     private bool dragging = false;
     private Rigidbody rb;
+    private GameObject ghost; // ghost semi-transparente do pe√£o
 
-    [SerializeField] private string computerZoneTag = "ComputerZone"; // Tag da ·rea do computador
-    [SerializeField] private Vector3 alignedOffset = new Vector3(0, 0, -1); // Ajuste de posiÁ„o para alinhar o pe„o
+    [SerializeField] private string computerZoneTag = "ComputerZone";
+    [SerializeField] private Vector3 alignedOffset = new Vector3(0, 0, -1);
     [SerializeField] private float alignmentSpeed = 5f;
-    [SerializeField] private LayerMask draggableLayer; // Layer para garantir que o Raycast acerte apenas o pe„o
+    [SerializeField] private LayerMask draggableLayer;
+    [SerializeField] private LayerMask computerZoneLayer;
+    [SerializeField] private Material transparentMaterial; // Material semi-transparente para o ghost
+
+    // Tempo para resolver o popup (configur√°vel via Inspector)
+    [SerializeField] private float popupResolutionTime = 3f;
 
     private Transform currentComputerZone = null;
-    private bool isInsideComputerZone = false;
     private bool isResolvingPopup = false;
 
     private void Awake()
@@ -26,7 +31,7 @@ public class DragDrop : MonoBehaviour
 
     void Update()
     {
-        if (isResolvingPopup) return; // Impede que o pe„o seja movido enquanto resolve o pop-up
+        if (isResolvingPopup) return;
 
         if (Input.touchCount > 0)
         {
@@ -43,45 +48,93 @@ public class DragDrop : MonoBehaviour
                         rb.useGravity = false;
                         rb.velocity = Vector3.zero;
                         rb.angularVelocity = Vector3.zero;
+
+                        // Instancia o ghost semi-transparente
+                        ghost = Instantiate(gameObject, transform.position, transform.rotation);
+                        ApplyTransparency(ghost);
+                        ghost.layer = LayerMask.NameToLayer("draggableLayer");
+
+                        // Desativa a colis√£o entre o pe√£o e o ghost
+                        Collider ghostCollider = ghost.GetComponent<Collider>();
+                        Collider pawnCollider = GetComponent<Collider>();
+                        if (ghostCollider != null && pawnCollider != null)
+                        {
+                            Physics.IgnoreCollision(ghostCollider, pawnCollider, true);
+                        }
+
+                        // Opcional: verificar imediatamente se o ghost est√° em uma zona (caso comece dentro)
+                        CheckForComputerZone(ghost.transform.position);
                     }
                     break;
 
                 case TouchPhase.Moved:
-                    if (dragging)
+                    if (dragging && ghost != null)
                     {
                         Vector3 targetPos = GetTouchWorldPosition(touch) + offset;
-                        rb.MovePosition(targetPos);
+                        ghost.transform.position = targetPos;
+
+                        // Durante o arrasto, verifica se o ghost est√° dentro da zona do computador
+                        CheckForComputerZone(ghost.transform.position);
+                        if (currentComputerZone != null)
+                        {
+                            Debug.Log("Pe√£o (ghost) est√° dentro da zona do computador enquanto arrasta.");
+                        }
                     }
                     break;
 
                 case TouchPhase.Ended:
-                    dragging = false;
-                    rb.useGravity = true;
-
-                    if (isInsideComputerZone && currentComputerZone != null)
+                    if (dragging)
                     {
-                        Debug.Log("Chegou aq");
-                        // Verifica se o computador tem um pop-up e se o pe„o tem a tag necess·ria para resolvÍ-lo
-                        ComputerPopup compPopup = currentComputerZone.GetComponent<ComputerPopup>();
-                        if (compPopup != null && compPopup.CanResolvePopup(gameObject.tag))
+                        dragging = false;
+                        rb.useGravity = true;
+
+                        // Use a posi√ß√£o final do ghost, se existir, para a verifica√ß√£o da zona
+                        if (ghost != null)
                         {
-                            Debug.Log("Resolvendo");
-                            // Alinha o pe„o com o computador e inicia a resoluÁ„o do pop-up
-                            AlignWithComputer(currentComputerZone);
-                            StartCoroutine(compPopup.ResolvePopup());
-                            isResolvingPopup = true;
-                            StartCoroutine(ResetResolvingFlag(compPopup.resolutionTime));
+                            CheckForComputerZone(ghost.transform.position);
                         }
                         else
                         {
-                            Debug.Log("Pc sem popups");
-                            // Caso n„o haja pop-up ou o pe„o n„o seja o correto, apenas alinha o pe„o com o computador
-                            AlignWithComputer(currentComputerZone);
+                            CheckForComputerZone(transform.position);
                         }
-                    }
 
-                    isInsideComputerZone = false;
-                    currentComputerZone = null;
+                        if (currentComputerZone != null)
+                        {
+                            Debug.Log("Soltou dentro da zona.");
+                            ComputerPopup compPopup = currentComputerZone.GetComponent<ComputerPopup>();
+                            if (compPopup != null && compPopup.CanResolvePopup(gameObject.tag))
+                            {
+                                Debug.Log("Resolvendo pop-up!");
+                                AlignWithComputer(currentComputerZone);
+                                StartCoroutine(compPopup.ResolvePopup(popupResolutionTime));
+                                isResolvingPopup = true;
+                                StartCoroutine(ResetResolvingFlag(popupResolutionTime));
+                            }
+                            else
+                            {
+                                Debug.Log("Zona v√°lida, mas sem pop-up ou pe√£o errado.");
+                                AlignWithComputer(currentComputerZone);
+                            }
+                        }
+                        // Restaura o render
+                        //SetRenderersEnable(true);
+
+                        // Reativa a colis√£o entre o pe√£o e o ghost antes de destru√≠-lo
+                        if (ghost != null)
+                        {
+                            Collider ghostCollider = ghost.GetComponent<Collider>();
+                            Collider pawnCollider = GetComponent<Collider>();
+                            if (ghostCollider != null && pawnCollider != null)
+                            {
+                                Physics.IgnoreCollision(ghostCollider, pawnCollider, false);
+                            }
+
+                            Destroy(ghost);
+                            ghost = null;
+                        }
+
+                        currentComputerZone = null;
+                    }
                     break;
             }
         }
@@ -98,24 +151,29 @@ public class DragDrop : MonoBehaviour
         return transform.position;
     }
 
-    private void OnTriggerEnter(Collider other)
+    /// <summary>
+    /// Verifica se h√° uma zona de computador na posi√ß√£o informada.
+    /// Atualiza currentComputerZone se encontrar um Collider com a tag correta.
+    /// </summary>
+    /// <param name="position">Posi√ß√£o a ser verificada</param>
+    private void CheckForComputerZone(Vector3 position)
     {
-        if (other.CompareTag(computerZoneTag))
+        Collider[] colliders = Physics.OverlapSphere(position, 0.5f, computerZoneLayer);
+        currentComputerZone = null;
+        foreach (var col in colliders)
         {
-            isInsideComputerZone = true;
-            currentComputerZone = other.transform;
+            if (col.CompareTag(computerZoneTag))
+            {
+                currentComputerZone = col.transform;
+                break;
+            }
         }
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag(computerZoneTag))
-        {
-            isInsideComputerZone = false;
-            currentComputerZone = null;
-        }
-    }
-
+    /// <summary>
+    /// Alinha o objeto com o computador (zona) de destino de forma suave.
+    /// </summary>
+    /// <param name="computer">Transform da zona do computador</param>
     private void AlignWithComputer(Transform computer)
     {
         Vector3 targetPosition = computer.position + alignedOffset;
@@ -136,6 +194,7 @@ public class DragDrop : MonoBehaviour
             transform.rotation = Quaternion.Slerp(startRotation, targetRotation, elapsedTime);
             yield return null;
         }
+
         transform.position = targetPosition;
         transform.rotation = targetRotation;
     }
@@ -144,5 +203,18 @@ public class DragDrop : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         isResolvingPopup = false;
+    }
+
+    /// <summary>
+    /// Aplica material semi-transparente a todos os renderers do objeto para criar efeito de ghost.
+    /// </summary>
+    /// <param name="obj">GameObject a ser modificado</param>
+    private void ApplyTransparency(GameObject obj)
+    {
+        Renderer[] renderers = obj.GetComponentsInChildren<Renderer>();
+        foreach (Renderer rend in renderers)
+        {
+            rend.material = transparentMaterial;
+        }
     }
 }

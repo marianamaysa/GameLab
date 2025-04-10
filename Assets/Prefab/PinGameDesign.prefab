@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5148037197430982510}
   - component: {fileID: 6064409787353612933}
   m_Layer: 8
-  m_Name: PinDesign
+  m_Name: PinGameDesign
   m_TagString: GameDpeao
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31,7 +31,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3.71, y: 1, z: 11.82}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6142044674330108385}
@@ -128,6 +128,11 @@ MonoBehaviour:
   draggableLayer:
     serializedVersion: 2
     m_Bits: 256
+  computerZoneLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  transparentMaterial: {fileID: 2100000, guid: 1bb2a00b2277f884e98a27db85d38227, type: 2}
+  popupResolutionTime: 3
 --- !u!54 &6064409787353612933
 Rigidbody:
   m_ObjectHideFlags: 0
