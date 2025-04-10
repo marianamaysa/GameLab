@@ -22,11 +22,7 @@ public class DragDrop : MonoBehaviour
     private Transform currentComputerZone = null;
     private bool isResolvingPopup = false;
 
-    [SerializeField] private Animator animator; // Referência ao Animator no filho
-
-    // Variáveis para debug visual (usadas via OnGUI)
-    private string debugMessage = "";
-    private float debugMessageTimer = 0f;
+    [SerializeField] private Animator animator; // Referência ao Animator presente no filho
 
     private void Awake()
     {
@@ -43,7 +39,6 @@ public class DragDrop : MonoBehaviour
         if (isResolvingPopup)
         {
             SetAnimationStates(true, false); // Sentado = true, Correndo = false
-            ShowDebugMessage("Resolvendo popup...", 0.5f);
             return;
         }
 
@@ -57,7 +52,6 @@ public class DragDrop : MonoBehaviour
                 case TouchPhase.Began:
                     if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, draggableLayer) && hit.transform == transform)
                     {
-                        // Quando iniciar o drag, garante que o Rigidbody esteja dinâmico
                         rb.isKinematic = false;
                         rb.useGravity = false;
                         offset = transform.position - GetTouchWorldPosition(touch);
@@ -89,7 +83,6 @@ public class DragDrop : MonoBehaviour
                         ghost.transform.position = targetPos;
                         CheckForComputerZone(ghost.transform.position);
                         SetAnimationStates(false, true); // Correndo = true
-                        ShowDebugMessage("Arrastando...", 0.5f);
                     }
                     break;
 
@@ -100,39 +93,26 @@ public class DragDrop : MonoBehaviour
                         rb.useGravity = true;
                         SetAnimationStates(false, false); // Zera a animação "Correndo"
 
-                        // Usa a posição final do toque para verificação
+                        // Usa a posição final do toque para a verificação
                         Vector3 finalTouchPos = GetTouchWorldPosition(touch);
                         CheckForComputerZone(finalTouchPos);
 
-                        string zonaChecada = (currentComputerZone != null) ? currentComputerZone.name : "Nenhuma zona detectada";
-
                         if (currentComputerZone != null)
                         {
-                            Debug.Log("Soltou dentro da zona: " + zonaChecada);
                             ComputerPopup compPopup = currentComputerZone.GetComponent<ComputerPopup>();
                             if (compPopup != null && compPopup.CanResolvePopup(gameObject.tag))
                             {
-                                // Inicia o alinhamento do objeto para a zona, garantindo que o peão fique fixo lá
                                 StartCoroutine(AlignAndHoldAtComputer(currentComputerZone));
                                 StartCoroutine(compPopup.ResolvePopup(popupResolutionTime));
                                 isResolvingPopup = true;
                                 StartCoroutine(ResetResolvingFlag(popupResolutionTime));
                                 SetAnimationStates(true, false); // Sentado = true
-                                ShowDebugMessage("Iniciando resolução do popup (Sentado)", 1f);
                             }
                             else
                             {
-                                // Apenas alinha se a zona for válida mas não houver pop-up ou se o peão estiver errado
                                 StartCoroutine(AlignAndHoldAtComputer(currentComputerZone));
-                                ShowDebugMessage("Zona válida, mas sem popup ou peão incorreto", 1f);
                             }
                         }
-                        else
-                        {
-                            ShowDebugMessage("Zona não detectada", 1f);
-                        }
-
-                        ShowDebugMessage("Ghost checou: " + zonaChecada, 2f);
 
                         // Restaura colisões e destrói o ghost
                         if (ghost != null)
@@ -146,7 +126,6 @@ public class DragDrop : MonoBehaviour
                             Destroy(ghost);
                             ghost = null;
                         }
-
                         currentComputerZone = null;
                     }
                     break;
@@ -155,24 +134,6 @@ public class DragDrop : MonoBehaviour
         else
         {
             SetAnimationStates(false, false); // Nenhuma animação ativa
-        }
-    }
-
-    private void ShowDebugMessage(string message, float duration)
-    {
-        debugMessage = message;
-        debugMessageTimer = duration;
-    }
-
-    private void OnGUI()
-    {
-        if (debugMessageTimer > 0)
-        {
-            GUIStyle style = new GUIStyle();
-            style.fontSize = 24;
-            style.normal.textColor = Color.red;
-            GUI.Label(new Rect(10, 10, 600, 30), debugMessage, style);
-            debugMessageTimer -= Time.deltaTime;
         }
     }
 
@@ -205,7 +166,7 @@ public class DragDrop : MonoBehaviour
     }
 
     /// <summary>
-    /// Alinha o peão com a zona de destino de forma suave e, ao final, fixa sua posição.
+    /// Alinha o peão com a zona (computador) de destino de forma suave e fixa sua posição.
     /// </summary>
     private IEnumerator AlignAndHoldAtComputer(Transform computer)
     {
@@ -223,11 +184,9 @@ public class DragDrop : MonoBehaviour
             transform.rotation = Quaternion.Slerp(startRotation, targetRotation, elapsedTime);
             yield return null;
         }
-        // Garante que a posição final seja exatamente o destino
         transform.position = targetPosition;
         transform.rotation = targetRotation;
-        // Torna o Rigidbody kinematic para "fixar" o peão na posição final
-        rb.isKinematic = true;
+        rb.isKinematic = true; // Fixa o peão na posição final
     }
 
     private IEnumerator ResetResolvingFlag(float time)
@@ -235,11 +194,10 @@ public class DragDrop : MonoBehaviour
         yield return new WaitForSeconds(time);
         isResolvingPopup = false;
         SetAnimationStates(false, false);
-        // Permite que o peão seja movido novamente
-        rb.isKinematic = false;
+        rb.isKinematic = false; // Permite que o peão seja movido novamente
     }
 
-    // Aplica o material semi-transparente a todos os renderers do objeto (para criar o efeito ghost)
+    // Aplica o material semi-transparente a todos os renderers do objeto ghost
     private void ApplyTransparency(GameObject obj)
     {
         Renderer[] renderers = obj.GetComponentsInChildren<Renderer>();
