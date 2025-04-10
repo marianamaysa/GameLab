@@ -92,7 +92,7 @@ public class ComputerPopup : MonoBehaviour
         TimerLevel timer = FindObjectOfType<TimerLevel>();
         if (timer != null)
         {
-            timer.AddTime(5f);
+            timer.AddTime(2f);
         }
 
         if (currentPopupObject != null)
