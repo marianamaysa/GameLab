@@ -1,42 +1,49 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class TimerLevel : MonoBehaviour
 {
     [SerializeField] private float startTimer;
     private float currentTime;
 
-    [SerializeField] TMP_Text timerText;
+    [SerializeField] private TMP_Text timerText;
+    [SerializeField] private GameObject objectToActivate; // Objeto a ser ativado
 
-    // Start is called before the first frame update
+    private bool hasActivated = false;
+
     void Start()
     {
         currentTime = startTimer;
+
+        if (objectToActivate != null)
+        {
+            objectToActivate.SetActive(false); // Garante que começa desativado
+        }
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if(currentTime > 0)
+        if (currentTime > 0)
         {
             currentTime -= Time.deltaTime;
 
-            if(currentTime > 60)
+            if (currentTime > 60)
             {
                 FormatTimer();
             }
             else
             {
                 timerText.text = currentTime.ToString("0:00");
-
             }
         }
         else
         {
-
+            if (!hasActivated && objectToActivate != null)
+            {
+                objectToActivate.SetActive(true);
+                hasActivated = true; // Impede de ativar múltiplas vezes
+            }
         }
     }
 
@@ -51,5 +58,6 @@ public class TimerLevel : MonoBehaviour
     public void AddTime(float timer)
     {
         currentTime += timer;
+        hasActivated = false; // Permite que a ativação aconteça de novo se você resetar o tempo
     }
 }

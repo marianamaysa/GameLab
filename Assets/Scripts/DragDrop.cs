@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -7,26 +7,38 @@ public class DragDrop : MonoBehaviour
     private Vector3 offset;
     private bool dragging = false;
     private Rigidbody rb;
+    private GameObject ghost;
 
-    [SerializeField] private string computerZoneTag = "ComputerZone"; // Tag da área do computador
-    [SerializeField] private Vector3 alignedOffset = new Vector3(0, 0, -1); // Ajuste de posição para alinhar o peão
+    [SerializeField] private string computerZoneTag = "ComputerZone";
+    [SerializeField] private Vector3 alignedOffset = new Vector3(0, 0, -1);
     [SerializeField] private float alignmentSpeed = 5f;
-    [SerializeField] private LayerMask draggableLayer; // Layer para garantir que o Raycast acerte apenas o peão
+    [SerializeField] private LayerMask draggableLayer;
+    [SerializeField] private LayerMask computerZoneLayer;
+    [SerializeField] private Material transparentMaterial;
+    [SerializeField] private float popupResolutionTime = 3f;
 
     private Transform currentComputerZone = null;
-    private bool isInsideComputerZone = false;
     private bool isResolvingPopup = false;
+
+    [SerializeField] private Animator animator;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
         rb.useGravity = true;
+
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>();
     }
 
     void Update()
     {
-        if (isResolvingPopup) return; // Impede que o peão seja movido enquanto resolve o pop-up
+        if (isResolvingPopup)
+        {
+            SetAnimationStates(true, false); // Sentado = true, Correndo = false
+            return;
+        }
 
         if (Input.touchCount > 0)
         {
@@ -43,47 +55,98 @@ public class DragDrop : MonoBehaviour
                         rb.useGravity = false;
                         rb.velocity = Vector3.zero;
                         rb.angularVelocity = Vector3.zero;
+
+                        ghost = Instantiate(gameObject, transform.position, transform.rotation);
+                        ApplyTransparency(ghost);
+                        ghost.layer = LayerMask.NameToLayer("draggableLayer");
+
+                        Collider ghostCollider = ghost.GetComponent<Collider>();
+                        Collider pawnCollider = GetComponent<Collider>();
+                        if (ghostCollider != null && pawnCollider != null)
+                        {
+                            Physics.IgnoreCollision(ghostCollider, pawnCollider, true);
+                        }
+
+                        CheckForComputerZone(ghost.transform.position);
                     }
                     break;
 
                 case TouchPhase.Moved:
-                    if (dragging)
+                    if (dragging && ghost != null)
                     {
                         Vector3 targetPos = GetTouchWorldPosition(touch) + offset;
-                        rb.MovePosition(targetPos);
+                        ghost.transform.position = targetPos;
+                        CheckForComputerZone(ghost.transform.position);
+                        SetAnimationStates(false, true); // Correndo = true
                     }
                     break;
 
                 case TouchPhase.Ended:
-                    dragging = false;
-                    rb.useGravity = true;
-
-                    if (isInsideComputerZone && currentComputerZone != null)
+                    if (dragging)
                     {
-                        Debug.Log("Chegou aq");
-                        // Verifica se o computador tem um pop-up e se o peão tem a tag necessária para resolvê-lo
-                        ComputerPopup compPopup = currentComputerZone.GetComponent<ComputerPopup>();
-                        if (compPopup != null && compPopup.CanResolvePopup(gameObject.tag))
+                        dragging = false;
+                        rb.useGravity = true;
+
+                        if (ghost != null)
                         {
-                            Debug.Log("Resolvendo");
-                            // Alinha o peão com o computador e inicia a resolução do pop-up
-                            AlignWithComputer(currentComputerZone);
-                            StartCoroutine(compPopup.ResolvePopup());
-                            isResolvingPopup = true;
-                            StartCoroutine(ResetResolvingFlag(compPopup.resolutionTime));
+                            CheckForComputerZone(ghost.transform.position);
                         }
                         else
                         {
-                            Debug.Log("Pc sem popups");
-                            // Caso não haja pop-up ou o peão não seja o correto, apenas alinha o peão com o computador
-                            AlignWithComputer(currentComputerZone);
+                            CheckForComputerZone(transform.position);
                         }
-                    }
 
-                    isInsideComputerZone = false;
-                    currentComputerZone = null;
+                        if (currentComputerZone != null)
+                        {
+                            Debug.Log("Soltou dentro da zona.");
+                            ComputerPopup compPopup = currentComputerZone.GetComponent<ComputerPopup>();
+                            if (compPopup != null && compPopup.CanResolvePopup(gameObject.tag))
+                            {
+                                Debug.Log("Resolvendo pop-up!");
+                                AlignWithComputer(currentComputerZone);
+                                StartCoroutine(compPopup.ResolvePopup(popupResolutionTime));
+                                isResolvingPopup = true;
+                                StartCoroutine(ResetResolvingFlag(popupResolutionTime));
+                                SetAnimationStates(true, false); // Sentado = true
+                            }
+                            else
+                            {
+                                Debug.Log("Zona vÃ¡lida, mas sem pop-up ou peÃ£o errado.");
+                                AlignWithComputer(currentComputerZone);
+                                SetAnimationStates(false, false);
+                            }
+                        }
+
+                        if (ghost != null)
+                        {
+                            Collider ghostCollider = ghost.GetComponent<Collider>();
+                            Collider pawnCollider = GetComponent<Collider>();
+                            if (ghostCollider != null && pawnCollider != null)
+                            {
+                                Physics.IgnoreCollision(ghostCollider, pawnCollider, false);
+                            }
+
+                            Destroy(ghost);
+                            ghost = null;
+                        }
+
+                        currentComputerZone = null;
+                    }
                     break;
             }
+        }
+        else
+        {
+            SetAnimationStates(false, false); // Nenhuma animaÃ§Ã£o
+        }
+    }
+
+    private void SetAnimationStates(bool sentado, bool correndo)
+    {
+        if (animator != null)
+        {
+            animator.SetBool("Sentado", sentado);
+            animator.SetBool("Correndo", correndo);
         }
     }
 
@@ -98,21 +161,17 @@ public class DragDrop : MonoBehaviour
         return transform.position;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void CheckForComputerZone(Vector3 position)
     {
-        if (other.CompareTag(computerZoneTag))
+        Collider[] colliders = Physics.OverlapSphere(position, 0.5f, computerZoneLayer);
+        currentComputerZone = null;
+        foreach (var col in colliders)
         {
-            isInsideComputerZone = true;
-            currentComputerZone = other.transform;
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag(computerZoneTag))
-        {
-            isInsideComputerZone = false;
-            currentComputerZone = null;
+            if (col.CompareTag(computerZoneTag))
+            {
+                currentComputerZone = col.transform;
+                break;
+            }
         }
     }
 
@@ -136,6 +195,7 @@ public class DragDrop : MonoBehaviour
             transform.rotation = Quaternion.Slerp(startRotation, targetRotation, elapsedTime);
             yield return null;
         }
+
         transform.position = targetPosition;
         transform.rotation = targetRotation;
     }
@@ -144,5 +204,14 @@ public class DragDrop : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         isResolvingPopup = false;
+    }
+
+    private void ApplyTransparency(GameObject obj)
+    {
+        Renderer[] renderers = obj.GetComponentsInChildren<Renderer>();
+        foreach (Renderer rend in renderers)
+        {
+            rend.material = transparentMaterial;
+        }
     }
 }
