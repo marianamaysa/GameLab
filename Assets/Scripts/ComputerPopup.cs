@@ -49,7 +49,7 @@ public class ComputerPopup : MonoBehaviour
         // Instancia o pop-up na posição deste computador (um pouco acima)
         currentPopupObject = Instantiate(
             currentPopup.popupPrefab,
-            transform.position + Vector3.up * 2f - transform.forward * -2f,
+            transform.position + Vector3.up * 1f - transform.forward * -2f,
             Quaternion.identity,
             transform.parent  // Torna o popup filho do pai do computador
         );
