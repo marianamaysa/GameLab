@@ -7,31 +7,38 @@ public class DragDrop : MonoBehaviour
     private Vector3 offset;
     private bool dragging = false;
     private Rigidbody rb;
-    private GameObject ghost; // ghost semi-transparente do peão
+    private GameObject ghost;
 
     [SerializeField] private string computerZoneTag = "ComputerZone";
     [SerializeField] private Vector3 alignedOffset = new Vector3(0, 0, -1);
     [SerializeField] private float alignmentSpeed = 5f;
     [SerializeField] private LayerMask draggableLayer;
     [SerializeField] private LayerMask computerZoneLayer;
-    [SerializeField] private Material transparentMaterial; // Material semi-transparente para o ghost
-
-    // Tempo para resolver o popup (configurável via Inspector)
+    [SerializeField] private Material transparentMaterial;
     [SerializeField] private float popupResolutionTime = 3f;
 
     private Transform currentComputerZone = null;
     private bool isResolvingPopup = false;
+
+    [SerializeField] private Animator animator;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
         rb.useGravity = true;
+
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>();
     }
 
     void Update()
     {
-        if (isResolvingPopup) return;
+        if (isResolvingPopup)
+        {
+            SetAnimationStates(true, false); // Sentado = true, Correndo = false
+            return;
+        }
 
         if (Input.touchCount > 0)
         {
@@ -49,12 +56,10 @@ public class DragDrop : MonoBehaviour
                         rb.velocity = Vector3.zero;
                         rb.angularVelocity = Vector3.zero;
 
-                        // Instancia o ghost semi-transparente
                         ghost = Instantiate(gameObject, transform.position, transform.rotation);
                         ApplyTransparency(ghost);
                         ghost.layer = LayerMask.NameToLayer("draggableLayer");
 
-                        // Desativa a colisão entre o peão e o ghost
                         Collider ghostCollider = ghost.GetComponent<Collider>();
                         Collider pawnCollider = GetComponent<Collider>();
                         if (ghostCollider != null && pawnCollider != null)
@@ -62,7 +67,6 @@ public class DragDrop : MonoBehaviour
                             Physics.IgnoreCollision(ghostCollider, pawnCollider, true);
                         }
 
-                        // Opcional: verificar imediatamente se o ghost está em uma zona (caso comece dentro)
                         CheckForComputerZone(ghost.transform.position);
                     }
                     break;
@@ -72,13 +76,8 @@ public class DragDrop : MonoBehaviour
                     {
                         Vector3 targetPos = GetTouchWorldPosition(touch) + offset;
                         ghost.transform.position = targetPos;
-
-                        // Durante o arrasto, verifica se o ghost está dentro da zona do computador
                         CheckForComputerZone(ghost.transform.position);
-                        if (currentComputerZone != null)
-                        {
-                            Debug.Log("Peão (ghost) está dentro da zona do computador enquanto arrasta.");
-                        }
+                        SetAnimationStates(false, true); // Correndo = true
                     }
                     break;
 
@@ -88,7 +87,6 @@ public class DragDrop : MonoBehaviour
                         dragging = false;
                         rb.useGravity = true;
 
-                        // Use a posição final do ghost, se existir, para a verificação da zona
                         if (ghost != null)
                         {
                             CheckForComputerZone(ghost.transform.position);
@@ -109,17 +107,16 @@ public class DragDrop : MonoBehaviour
                                 StartCoroutine(compPopup.ResolvePopup(popupResolutionTime));
                                 isResolvingPopup = true;
                                 StartCoroutine(ResetResolvingFlag(popupResolutionTime));
+                                SetAnimationStates(true, false); // Sentado = true
                             }
                             else
                             {
                                 Debug.Log("Zona válida, mas sem pop-up ou peão errado.");
                                 AlignWithComputer(currentComputerZone);
+                                SetAnimationStates(false, false);
                             }
                         }
-                        // Restaura o render
-                        //SetRenderersEnable(true);
 
-                        // Reativa a colisão entre o peão e o ghost antes de destruí-lo
                         if (ghost != null)
                         {
                             Collider ghostCollider = ghost.GetComponent<Collider>();
@@ -138,6 +135,19 @@ public class DragDrop : MonoBehaviour
                     break;
             }
         }
+        else
+        {
+            SetAnimationStates(false, false); // Nenhuma animação
+        }
+    }
+
+    private void SetAnimationStates(bool sentado, bool correndo)
+    {
+        if (animator != null)
+        {
+            animator.SetBool("Sentado", sentado);
+            animator.SetBool("Correndo", correndo);
+        }
     }
 
     Vector3 GetTouchWorldPosition(Touch touch)
@@ -151,11 +161,6 @@ public class DragDrop : MonoBehaviour
         return transform.position;
     }
 
-    /// <summary>
-    /// Verifica se há uma zona de computador na posição informada.
-    /// Atualiza currentComputerZone se encontrar um Collider com a tag correta.
-    /// </summary>
-    /// <param name="position">Posição a ser verificada</param>
     private void CheckForComputerZone(Vector3 position)
     {
         Collider[] colliders = Physics.OverlapSphere(position, 0.5f, computerZoneLayer);
@@ -170,10 +175,6 @@ public class DragDrop : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Alinha o objeto com o computador (zona) de destino de forma suave.
-    /// </summary>
-    /// <param name="computer">Transform da zona do computador</param>
     private void AlignWithComputer(Transform computer)
     {
         Vector3 targetPosition = computer.position + alignedOffset;
@@ -205,10 +206,6 @@ public class DragDrop : MonoBehaviour
         isResolvingPopup = false;
     }
 
-    /// <summary>
-    /// Aplica material semi-transparente a todos os renderers do objeto para criar efeito de ghost.
-    /// </summary>
-    /// <param name="obj">GameObject a ser modificado</param>
     private void ApplyTransparency(GameObject obj)
     {
         Renderer[] renderers = obj.GetComponentsInChildren<Renderer>();
