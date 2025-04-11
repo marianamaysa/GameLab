@@ -21,6 +21,8 @@ public class ComputerPopup : MonoBehaviour
     private GameObject currentPopupObject = null;
     private PopupData currentPopup;
     private AudioSource audioSource;
+    [SerializeField] private float popupExpireTime = 10f; //tempo limite do popup na tela sem resolucao
+
 
     private void Start()
     {
@@ -62,6 +64,7 @@ public class ComputerPopup : MonoBehaviour
         {
             audioSource.PlayOneShot(currentPopup.popupSound);
         }
+        StartCoroutine(PopupExpireRoutine());
     }
 
     /// <summary>
@@ -102,5 +105,25 @@ public class ComputerPopup : MonoBehaviour
         }
         hasPopup = false;
         Debug.Log("[ComputerPopup] Pop-up resolvido!");
+    }
+
+    private IEnumerator PopupExpireRoutine()
+    {
+        yield return new WaitForSeconds(popupExpireTime);
+
+        if (hasPopup && currentPopupObject != null)
+        {
+            Destroy(currentPopupObject);
+            currentPopupObject = null;
+            hasPopup = false;
+            Debug.Log("[ComputerPopup] Pop-up expirado e removido.");
+
+            // Reduz tempo do timer
+            TimerLevel timer = FindObjectOfType<TimerLevel>();
+            if (timer != null)
+            {
+                timer.AddTime(-3f);
+            }
+        }
     }
 }
