@@ -6,8 +6,20 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Fase 1.unity
-    guid: cfe77d5e9bf576c468caf5b4970e50bc
+    path: Assets/Scenes/Menu.unity
+    guid: 3b5156babfdb7524ca2c094c91972152
+  - enabled: 1
+    path: Assets/Scenes/Fase 1Mariana.unity
+    guid: 4087010803482bc4db749ec69724887c
+  - enabled: 1
+    path: Assets/Scenes/Fase 1Kallebe.unity
+    guid: 9791f29f75365c440813a572f4bf0e55
+  - enabled: 1
+    path: Assets/Scenes/Tutorial.unity
+    guid: 79217f78ce85f7d429ec53243aabd51c
+  - enabled: 1
+    path: Assets/Scenes/Creditos.unity
+    guid: a5199ca5bd2a6304db3697a3d7bf354d
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 59b1279f5a3c85d40b2b075f43352240,
       type: 2}
