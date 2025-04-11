@@ -190,7 +190,9 @@ MonoBehaviour:
     requiredPawnTag: Devpeao
     popupSound: {fileID: 8300000, guid: 8306419c8c4751a4d8be2cbe80d30930, type: 3}
     resolvedSound: {fileID: 8300000, guid: 018d8311d1c3aec42925a72ec78e67ad, type: 3}
+  expiredSound: {fileID: 8300000, guid: f354631bd89b34a469a6516d8daab617, type: 3}
   popupScale: {x: 1, y: 1, z: 0.18142}
+  popupExpireTime: 10
 --- !u!82 &3062467995093009648
 AudioSource:
   m_ObjectHideFlags: 0

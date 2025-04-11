@@ -13,6 +13,8 @@ public class PopupData
 public class ComputerPopup : MonoBehaviour
 {
     public PopupData[] popups = new PopupData[3]; // Lista com 3 pop-ups diferentes
+    [SerializeField] private AudioClip expiredSound; // Som ao expirar o pop-up
+
 
     // Variável para definir a escala exata do pop-up
     public Vector3 popupScale = Vector3.one;
@@ -113,6 +115,12 @@ public class ComputerPopup : MonoBehaviour
 
         if (hasPopup && currentPopupObject != null)
         {
+            // Toca o som
+            if (expiredSound != null)
+            {
+                audioSource.PlayOneShot(expiredSound);
+            }
+
             Destroy(currentPopupObject);
             currentPopupObject = null;
             hasPopup = false;
@@ -125,5 +133,6 @@ public class ComputerPopup : MonoBehaviour
                 timer.AddTime(-3f);
             }
         }
+
     }
 }

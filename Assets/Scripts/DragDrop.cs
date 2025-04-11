@@ -22,10 +22,16 @@ public class DragDrop : MonoBehaviour
     private Transform currentComputerZone = null;
     private bool isResolvingPopup = false;
 
+    [SerializeField] public AudioClip placementSound;
+    [SerializeField] private AudioSource audioSource;
+
     [SerializeField] private Animator animator; // Referência ao Animator presente no filho
 
     private void Awake()
     {
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
+
         rb = GetComponent<Rigidbody>();
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
         rb.useGravity = true;
@@ -102,6 +108,9 @@ public class DragDrop : MonoBehaviour
                             ComputerPopup compPopup = currentComputerZone.GetComponent<ComputerPopup>();
                             if (compPopup != null && compPopup.CanResolvePopup(gameObject.tag))
                             {
+                                if (placementSound != null)
+                                    audioSource.PlayOneShot(placementSound);
+
                                 StartCoroutine(AlignAndHoldAtComputer(currentComputerZone));
                                 StartCoroutine(compPopup.ResolvePopup(popupResolutionTime));
                                 isResolvingPopup = true;
@@ -148,9 +157,7 @@ public class DragDrop : MonoBehaviour
         return transform.position;
     }
 
-    /// <summary>
     /// Verifica se há uma zona de computador na posição informada.
-    /// </summary>
     private void CheckForComputerZone(Vector3 position)
     {
         Collider[] colliders = Physics.OverlapSphere(position, 0.5f, computerZoneLayer);
@@ -165,9 +172,7 @@ public class DragDrop : MonoBehaviour
         }
     }
 
-    /// <summary>
     /// Alinha o peão com a zona (computador) de destino de forma suave e fixa sua posição.
-    /// </summary>
     private IEnumerator AlignAndHoldAtComputer(Transform computer)
     {
         Vector3 targetPosition = computer.position + alignedOffset;

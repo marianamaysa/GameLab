@@ -133,6 +133,8 @@ MonoBehaviour:
     m_Bits: 512
   transparentMaterial: {fileID: 2100000, guid: 0803084596215684b896dd8f9c2d87da, type: 2}
   popupResolutionTime: 3
+  placementSound: {fileID: 8300000, guid: 95967eec88bf7f04e9efc2abe8bba7da, type: 3}
+  audioSource: {fileID: 0}
   animator: {fileID: 3705532559241999736}
 --- !u!54 &8592013768377429133
 Rigidbody:
