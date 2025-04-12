@@ -12,20 +12,22 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private string gameScene = "Fase 1";
 
     private AudioSource audioSource;
+    private AudioSource musicSource;
+
 
     private void Awake()
     {
-        if(Instance == null)
+        if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
             audioSource = GetComponent<AudioSource>();
+            musicSource = gameObject.AddComponent<AudioSource>();
         }
         else
         {
             Destroy(gameObject);
         }
-        
     }
 
     private void OnEnable()
@@ -48,6 +50,23 @@ public class AudioManager : MonoBehaviour
         {
             audioSource.clip = menuAudio;
             audioSource.Play();
+        }
+    }
+
+    public void StopMusic()
+    {
+        if (musicSource.isPlaying)
+        {
+            musicSource.Stop();
+        }
+    }
+
+    public void PlayMusic(AudioClip newClip)
+    {
+        if (musicSource.clip != newClip)
+        {
+            musicSource.clip = newClip;
+            musicSource.Play();
         }
     }
 }

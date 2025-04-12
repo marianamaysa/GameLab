@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using TMPro;
 
 [System.Serializable]
 public class PopupData
@@ -13,6 +14,8 @@ public class PopupData
 public class ComputerPopup : MonoBehaviour
 {
     public PopupData[] popups = new PopupData[3]; // Lista com 3 pop-ups diferentes
+    [SerializeField] private AudioClip expiredSound; // Som ao expirar o pop-up
+
 
     // Variável para definir a escala exata do pop-up
     public Vector3 popupScale = Vector3.one;
@@ -21,6 +24,8 @@ public class ComputerPopup : MonoBehaviour
     private GameObject currentPopupObject = null;
     private PopupData currentPopup;
     private AudioSource audioSource;
+    [SerializeField] private float popupExpireTime = 10f; //tempo limite do popup na tela sem resolucao
+
 
     private void Start()
     {
@@ -62,6 +67,7 @@ public class ComputerPopup : MonoBehaviour
         {
             audioSource.PlayOneShot(currentPopup.popupSound);
         }
+        StartCoroutine(PopupExpireRoutine());
     }
 
     /// <summary>
@@ -102,5 +108,34 @@ public class ComputerPopup : MonoBehaviour
         }
         hasPopup = false;
         Debug.Log("[ComputerPopup] Pop-up resolvido!");
+
+        yield return new WaitForSeconds(resolutionTime);
+    }
+
+    private IEnumerator PopupExpireRoutine()
+    {
+        yield return new WaitForSeconds(popupExpireTime);
+
+        if (hasPopup && currentPopupObject != null)
+        {
+            // Toca o som
+            if (expiredSound != null)
+            {
+                audioSource.PlayOneShot(expiredSound);
+            }
+
+            Destroy(currentPopupObject);
+            currentPopupObject = null;
+            hasPopup = false;
+            Debug.Log("[ComputerPopup] Pop-up expirado e removido.");
+
+            // Reduz tempo do timer
+            TimerLevel timer = FindObjectOfType<TimerLevel>();
+            if (timer != null)
+            {
+                timer.AddTime(-3f);
+            }
+        }
+
     }
 }
