@@ -122,6 +122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a282d6d72f5724c86f670d2b37053a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animator: {fileID: 201283276542336144}
   computerZoneTag: ComputerZone
   alignedOffset: {x: 0, y: 0, z: -1}
   alignmentSpeed: 5
@@ -135,7 +136,7 @@ MonoBehaviour:
   popupResolutionTime: 3
   placementSound: {fileID: 8300000, guid: 95967eec88bf7f04e9efc2abe8bba7da, type: 3}
   audioSource: {fileID: 0}
-  animator: {fileID: 201283276542336144}
+  resolvingSound: {fileID: 8300000, guid: d439135c90af6654bad00b56469e8a5b, type: 3}
 --- !u!54 &9138794578453556966
 Rigidbody:
   m_ObjectHideFlags: 0

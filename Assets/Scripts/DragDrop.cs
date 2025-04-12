@@ -8,7 +8,9 @@ public class DragDrop : MonoBehaviour
     private bool dragging = false;
     private Rigidbody rb;
     private GameObject ghost; // Ghost (clone semi-transparente do peão)
+    [SerializeField] private Animator animator; // Referência ao Animator presente no filho
 
+    [Header("PopUp")]
     [SerializeField] private string computerZoneTag = "ComputerZone";
     [SerializeField] private Vector3 alignedOffset = new Vector3(0, 0, -1);
     [SerializeField] private float alignmentSpeed = 5f;
@@ -22,13 +24,15 @@ public class DragDrop : MonoBehaviour
     private Transform currentComputerZone = null;
     private bool isResolvingPopup = false;
 
+    [Header("Musica e SFX")]
     [SerializeField] public AudioClip placementSound;
     [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip resolvingSound;
 
-    [SerializeField] private Animator animator; // Referência ao Animator presente no filho
 
     private void Awake()
     {
+
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.playOnAwake = false;
 
@@ -196,7 +200,22 @@ public class DragDrop : MonoBehaviour
 
     private IEnumerator ResetResolvingFlag(float time)
     {
+        if (resolvingSound != null)
+        {
+            audioSource.clip = resolvingSound;
+            audioSource.loop = true;
+            audioSource.Play();
+        }
+
         yield return new WaitForSeconds(time);
+
+        if (audioSource.isPlaying && audioSource.clip == resolvingSound)
+        {
+            audioSource.Stop();
+            audioSource.clip = null;
+            audioSource.loop = false;
+        }
+
         isResolvingPopup = false;
         SetAnimationStates(false, false);
         rb.isKinematic = false; // Permite que o peão seja movido novamente
