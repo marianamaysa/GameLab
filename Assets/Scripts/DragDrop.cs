@@ -207,6 +207,7 @@ public class DragDrop : MonoBehaviour
             audioSource.Play();
         }
 
+
         yield return new WaitForSeconds(time);
 
         if (audioSource.isPlaying && audioSource.clip == resolvingSound)
@@ -216,6 +217,7 @@ public class DragDrop : MonoBehaviour
             audioSource.loop = false;
         }
 
+        ScoreManager.Instance.AddPoint();
         isResolvingPopup = false;
         SetAnimationStates(false, false);
         rb.isKinematic = false; // Permite que o peão seja movido novamente

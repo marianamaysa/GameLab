@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using TMPro;
 
 [System.Serializable]
 public class PopupData
@@ -107,6 +108,8 @@ public class ComputerPopup : MonoBehaviour
         }
         hasPopup = false;
         Debug.Log("[ComputerPopup] Pop-up resolvido!");
+
+        yield return new WaitForSeconds(resolutionTime);
     }
 
     private IEnumerator PopupExpireRoutine()
